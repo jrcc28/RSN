@@ -1,48 +1,20 @@
 const express = require('express');
+const mongoose = require('mongoose');
+
 const app = express();
-const bodyParser = require('body-parser')
 
-require('./config/config')
+// app.use use middlewares
+app.use(require('./routes/user'));
+require('./config/config');
 
-// parse application/x-www-form-urlencoded
-// app.use mean middlewares
-app.use(bodyParser.urlencoded({ extended: false }))
+// Connection to DB
+// useNew, useCreate y demas se debe quedar.
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true },
+    (err, resp) => {
+        if (err) throw Error;
 
-// parse application/json
-app.use(bodyParser.json())
-
-app.get('/user', function(req, res) {
-    res.json('Get user');
-})
-
-app.post('/user', function(req, res) { // Create new documents
-    // In postman need to use x-www-form-urlencoded
-    // Get data from body in post:
-    let body = req.body;
-
-    if (body.name === undefined) {
-        res.status(400).json({
-            ok: false,
-            message: 'Name is required'
-        });
-    } else {
-        res.json({
-            person: body
-        });
-    }
-
-})
-
-app.put('/user/:id', function(req, res) { // Update documents with param id
-    let id = req.params.id;
-    res.json({
-        id
+        console.log(`Connection to MongoDB Up!!`);
     });
-})
-
-app.delete('/user', function(req, res) { // Update documents
-    res.json('Delete user');
-})
 
 app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}`);

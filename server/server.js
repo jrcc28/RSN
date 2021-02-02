@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const app = express();
 
 // app.use use middlewares
-app.use(require('./routes/user'));
+// Global routes config:
+app.use(require('./routes/index'));
+
 require('./config/config');
 
 // Connection to DB

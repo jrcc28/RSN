@@ -1,8 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const _ = require('underscore')
-const User = require('../models/users');
 const bodyParser = require('body-parser');
+
+const User = require('../models/users');
+const { verifyToken, verifyAdminRole } = require('../middlewares/authentication')
+
 const app = express();
 
 // parse application/x-www-form-urlencoded
@@ -11,7 +14,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json())
 
-app.get('/user', function(req, res) {
+// MiddleWare is the second argument
+app.get('/user', verifyToken, (req, res) => {
+    // Now exists a property with name: user in req
+    // req.user.name
+
     let from = req.query.from || 0; // needs validation to be a number
     from = Number(from);
 
@@ -45,7 +52,7 @@ app.get('/user', function(req, res) {
 });
 
 
-app.post('/user', function(req, res) { // Create new documents
+app.post('/user', [verifyToken, verifyAdminRole], (req, res) => { // Create new documents
     // In postman need to use x-www-form-urlencoded
     // Get data from body in post:
     let body = req.body;
@@ -77,7 +84,7 @@ app.post('/user', function(req, res) { // Create new documents
     })
 })
 
-app.put('/user/:id', function(req, res) { // Update documents with param id
+app.put('/user/:id', [verifyToken, verifyAdminRole], (req, res) => { // Update documents with param id
     let id = req.params.id;
 
     // Opt2: underscore:
@@ -113,7 +120,7 @@ app.put('/user/:id', function(req, res) { // Update documents with param id
     })
 })
 
-app.delete('/user/:id', function(req, res) { // Update documents
+app.delete('/user/:id', [verifyToken, verifyAdminRole], (req, res) => { // Update documents
     let id = req.params.id;
 
     let newState = {

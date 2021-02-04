@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const app = express();
 
@@ -8,6 +9,9 @@ const app = express();
 app.use(require('./routes/index'));
 
 require('./config/config');
+
+// Able to access public folder
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 // Connection to DB
 // useNew, useCreate y demas se debe quedar.

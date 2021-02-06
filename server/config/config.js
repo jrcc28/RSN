@@ -22,10 +22,8 @@ process.env.URLDB = urlDB;
 
 /**
  * ExpiresIn Token:
- * seg min h days
- * 60 * 60 * 24 * 30
  */
-process.env.EXPIRES_IN = 60 * 60 * 24 * 30;
+process.env.EXPIRES_IN = '12h';
 
 /**
  * Seed:
